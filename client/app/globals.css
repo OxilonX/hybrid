@@ -51,6 +51,7 @@
 }
 
 :root {
+  --path-color:oklch(72.016% 0.19073 49.605);
   --background: oklch(1.0000 0 0);
   --foreground: oklch(0.1884 0.0128 248.5103);
   --card: oklch(0.9784 0.0011 197.1387);
@@ -89,9 +90,10 @@
 }
 
 .dark {
+  --path-color:oklch(72.016% 0.19073 49.605);
   --background: oklch(0 0 0);
   --foreground: oklch(0.9328 0.0025 228.7857);
-  --card: oklch(34.26% 0.00868 285.875);
+  --card: oklch(28.254% 0.00729 285.868);
   --card-foreground: oklch(0.8853 0 0);
   --popover: oklch(0 0 0);
   --popover-foreground: oklch(0.9328 0.0025 228.7857);
@@ -99,7 +101,7 @@
   --primary-foreground: oklch(1.0000 0 0);
   --secondary: oklch(0.9622 0.0035 219.5331);
   --secondary-foreground: oklch(0.1884 0.0128 248.5103);
-  --muted: oklch(0.2090 0 0);
+  --muted: oklch(47.836% 0.00005 271.152);
   --muted-foreground: oklch(0.5637 0.0078 247.9662);
   --accent: oklch(0.1928 0.0331 242.5459);
   --accent-foreground: oklch(0.6692 0.1607 245.0110);
