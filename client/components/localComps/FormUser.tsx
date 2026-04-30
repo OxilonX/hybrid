@@ -23,7 +23,21 @@ const FormUser = () => {
     confidence: 53,
     prediction: "negative",
   };
+  const handleAnalyze = async (text: string) => {
+    try {
+      const response = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text }),
+      });
 
+      const data = await response.json();
+      console.log("Prediction:", data.label);
+      console.log("Confidence:", data.confidence);
+    } catch (error) {
+      console.error("Error connecting to AI model:", error);
+    }
+  };
   const getConfidenceColor = (score: number) => {
     if (score < 40) return "#ef4444";
     if (score < 70) return "#eab308";
@@ -71,7 +85,12 @@ const FormUser = () => {
               {" "}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="cursor-pointer font-bold px-4 w-full ">
+                  <Button
+                    onClick={() => {
+                      handleAnalyze("hello im not feeling okay");
+                    }}
+                    className="cursor-pointer font-bold px-4 w-full "
+                  >
                     Analyse
                     <ArrowDownCircleIcon className="size-4" />
                   </Button>
