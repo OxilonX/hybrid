@@ -225,10 +225,21 @@ def build_ensemble(X_train, y_train, X_val, y_val):
 def predict_single(text, model, vectorizers, lang="english", label_map=None):
     """
     Predict a single text string. Use for your demo app.
+    Auto-detects script and falls back to darija cleaner for mixed/Latin text.
     Returns: (predicted_label, confidence_score_or_None)
     """
-    from server.preprocessing import clean_text
+    from preprocessing import clean_text, clean_darija
+
+    # Auto-detect: if text has any Arabic chars use config lang, else darija (handles both scripts)
+    has_arabic = any("\u0600" <= ch <= "\u06FF" for ch in text)
+    if not has_arabic and lang == "arabic":
+        lang = "darija"
+
     cleaned = clean_text(text, lang=lang)
+    if not cleaned.strip():
+        # Fallback: if cleaning produced empty text, try darija
+        cleaned = clean_darija(text)
+
     features = transform_features([cleaned], vectorizers)
     pred = model.predict(features)[0]
 
@@ -239,11 +250,9 @@ def predict_single(text, model, vectorizers, lang="english", label_map=None):
     elif hasattr(model, "decision_function"):
         score = model.decision_function(features)[0]
         if hasattr(score, "__len__"):
-            # Multi-class: softmax approximation
             exp_s = np.exp(score - score.max())
             confidence = float(exp_s.max() / exp_s.sum())
         else:
-            # Binary: sigmoid approximation
             confidence = float(1 / (1 + np.exp(-abs(score))))
 
     label = label_map[pred] if label_map else pred

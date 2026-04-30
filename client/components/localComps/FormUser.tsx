@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -18,13 +20,16 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 const FormUser = () => {
+  const [input, setInput] = useState("");
   const value = 50;
-  const dummyData = {
+  const [dummyData, setDummy] = useState({
     confidence: 53,
     prediction: "negative",
-  };
+  });
+
   const handleAnalyze = async (text: string) => {
     try {
+      console.log("Sending request:", { text });
       const response = await fetch("http://localhost:5000/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,8 +37,16 @@ const FormUser = () => {
       });
 
       const data = await response.json();
-      console.log("Prediction:", data.label);
-      console.log("Confidence:", data.confidence);
+      console.log("Raw response:", data);
+
+      const confidencePercent =
+        data.confidence !== null ? Math.round(data.confidence * 100) : 0;
+      console.log("Converted confidence:", confidencePercent);
+
+      setDummy({
+        confidence: confidencePercent,
+        prediction: data.label,
+      });
     } catch (error) {
       console.error("Error connecting to AI model:", error);
     }
@@ -45,9 +58,9 @@ const FormUser = () => {
   };
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case "positive":
+      case "pos":
         return "#05df72";
-      case "negative":
+      case "neg":
         return "#ef4444";
       default:
         return "#000000";
@@ -61,6 +74,8 @@ const FormUser = () => {
       <Card className="w-full min-h-[180px] flex flex-col justify-between dark:bg-card px-2 ">
         <CardContent className="pt-4 pb-2 ">
           <Textarea
+            onChange={(e) => setInput(e.target.value)}
+            value={input}
             id="text"
             placeholder="Ask AI a question or make a request."
             className="
@@ -87,7 +102,7 @@ const FormUser = () => {
                 <DialogTrigger asChild>
                   <Button
                     onClick={() => {
-                      handleAnalyze("hello im not feeling okay");
+                      handleAnalyze(input);
                     }}
                     className="cursor-pointer font-bold px-4 w-full "
                   >
