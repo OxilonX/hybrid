@@ -1,20 +1,12 @@
 import Image from "next/image";
-
+import HomePage from "@/components/sections/HomePage";
 export default function Home() {
   return (
     <div className=" bg-background">
-      <main className="flex items-center justify-center">
-        <section>
-          <Home />
+      <main className=" flex items-center w-full">
+        <section className="py-6 w-full">
+          <HomePage />
         </section>
-        {/* <Image
-          src={"/glossy_sphere_2.png"}
-          alt="glossy sphere"
-          width={70}
-          height={70}
-          sizes="80px"
-          className="drop-shadow-lg"
-        /> */}
       </main>
     </div>
   );
